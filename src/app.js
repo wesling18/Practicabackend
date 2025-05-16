@@ -28,8 +28,7 @@ app.use('/api', rutasUsuarios);
 app.use('/api', rutasProductos);
 app.use('/api', rutasCategorias);
 app.use('/api', rutasVentas);
-app.use('/api', rutasEstadisticas);
-app.use('/api', rutasEstadisticas);
+
 
 // Manejo de rutas no encontradas
 app.use((req, res, next) => {

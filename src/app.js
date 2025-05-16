@@ -5,6 +5,8 @@ import rutasUsuarios from './routes/usuarios.routes.js';
 import rutasProductos from './routes/productos.routes.js';
 import rutasCategorias from './routes/categoria.routes.js';
 import rutasVentas from './routes/ventas.routes.js';
+import rutasEstadisticas from './routes/estadisticas.routes.js';
+
 
 const app = express();
 
@@ -14,17 +16,20 @@ app.use(cors({
     allowedHeaders: ['Content-Type'],
 }));
 
+app.use(express.json({ limit: '10mb' })); // Aumenta a 10 MB
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
+
+
 app.use(express.json());
 
+app.use('/api', rutasEstadisticas);
 app.use('/api', rutasClientes);
 app.use('/api', rutasUsuarios);
 app.use('/api', rutasProductos);
 app.use('/api', rutasCategorias);
 app.use('/api', rutasVentas);
-app.use(express.json({ limit: '10mb' })); // Aumenta a 10 MB
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
-
-
+app.use('/api', rutasEstadisticas);
+app.use('/api', rutasEstadisticas);
 
 // Manejo de rutas no encontradas
 app.use((req, res, next) => {

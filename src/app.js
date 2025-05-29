@@ -6,7 +6,7 @@ import rutasProductos from './routes/productos.routes.js';
 import rutasCategorias from './routes/categoria.routes.js';
 import rutasVentas from './routes/ventas.routes.js';
 import rutasEstadisticas from './routes/estadisticas.routes.js';
-
+import rutasIA from './routes/ia.routes.js';
 
 const app = express();
 
@@ -28,7 +28,7 @@ app.use('/api', rutasUsuarios);
 app.use('/api', rutasProductos);
 app.use('/api', rutasCategorias);
 app.use('/api', rutasVentas);
-
+app.use('/ia', rutasIA);
 
 // Manejo de rutas no encontradas
 app.use((req, res, next) => {

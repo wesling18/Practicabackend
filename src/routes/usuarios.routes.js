@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { obtenerUsuarios, obtenerUsuario, verificarUsuario } from '../controllers/usuarios.controller.js';
+import { obtenerUsuarios, obtenerUsuario, verificarUsuario, registrarUsuarios, eliminarUsuarios, actualizarUsuarios } from '../controllers/usuarios.controller.js';
 
 const router = Router();
 
@@ -11,5 +11,12 @@ router.get('/usuario/:user', obtenerUsuario);
 
 // Ruta para verificar un usuario y contraseña.
 router.post('/verificar', verificarUsuario);
+
+
+router.post('/registrarusuarios', registrarUsuarios);
+
+router.delete('eliminarusuarios/:id', eliminarUsuarios)
+
+router.patch('/actualizarusuarios/:id', actualizarUsuarios)
 
 export default router;

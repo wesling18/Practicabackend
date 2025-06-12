@@ -3,7 +3,8 @@ import { pool } from '../db.js';
 // Obtener detalles de una venta específica por id_venta
 export const obtenerDetallesVenta = async (req, res) => {
   try {
-    const { id } = req.params; // Obtener id_venta del parámetro de la ruta
+    const { id_venta } = req.params; // Usar id_venta para consistencia
+    console.log(`Buscando detalles para id_venta: ${id_venta}`); // Depuración
     const [result] = await pool.query(`
       SELECT 
         dv.id_detalle_venta,
@@ -15,7 +16,7 @@ export const obtenerDetallesVenta = async (req, res) => {
       FROM Detalles_Ventas dv
       INNER JOIN Productos p ON dv.id_producto = p.id_producto
       WHERE dv.id_venta = ?
-    `, [id]);
+    `, [id_venta]);
 
     if (result.length === 0) {
       return res.status(404).json({ mensaje: 'Detalles de la venta no encontrados' });
@@ -23,6 +24,7 @@ export const obtenerDetallesVenta = async (req, res) => {
 
     res.json(result);
   } catch (error) {
+    console.error('Error en obtenerDetallesVenta:', error); // Depuración
     return res.status(500).json({
       mensaje: 'Ha ocurrido un error al leer los detalles de la venta.',
       error: error.message

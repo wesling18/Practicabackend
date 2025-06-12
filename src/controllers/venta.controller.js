@@ -1,7 +1,5 @@
-
 import { pool } from '../db.js';
 
-  
 // Obtener todas las ventas
 export const obtenerVentas = async (req, res) => {
   try {
@@ -25,7 +23,6 @@ export const obtenerVentas = async (req, res) => {
     });
   }
 };
-  
 
 // Eliminar una venta (los detalles se eliminan automáticamente por ON DELETE CASCADE)
 export const eliminarVenta = async (req, res) => {
@@ -38,7 +35,7 @@ export const eliminarVenta = async (req, res) => {
       return res.status(404).json({ mensaje: 'Venta no encontrada' });
     }
 
-    res.json({ mensaje: 'Venta y sus detalles eliminados correctamente' });
+    res.status(204).send(); // Cambiado a 204 para indicar éxito sin contenido
   } catch (error) {
     return res.status(500).json({
       mensaje: 'Error al eliminar la venta',
@@ -52,10 +49,9 @@ export const registrarVenta = async (req, res) => {
   const { id_cliente, id_empleado, fecha_venta, total_venta, detalles } = req.body;
 
   try {
-    //const fecha_venta = new Date(fecha_venta).toISOString().slice(0, 19).replace('T', ' '); // Convierte a 'YYYY-MM-DD HH:mm:ss'
     const [ventaResult] = await pool.query(
       'INSERT INTO Ventas (id_cliente, id_empleado, fecha_venta, total_venta) VALUES (?, ?, ?, ?)',
-      [id_cliente, id_empleado, fecha_venta , total_venta]
+      [id_cliente, id_empleado, fecha_venta, total_venta]
     );
 
     const id_venta = ventaResult.insertId;
@@ -77,18 +73,12 @@ export const registrarVenta = async (req, res) => {
   }
 };
 
-
-
 // Actualizar una venta con sus detalles
 export const actualizarVenta = async (req, res) => {
   const { id_venta } = req.params;
   const { id_cliente, id_empleado, fecha_venta, total_venta, detalles } = req.body;
 
   try {
-    // Formatear la fecha al formato MySQL
-  //  const fechaVentaFormateada = new Date(fecha_venta).toISOString().slice(0, 19).replace('T', ' ');
-
-    // Actualizar la venta
     const [ventaResult] = await pool.query(
       'UPDATE Ventas SET id_cliente = ?, id_empleado = ?, fecha_venta = ?, total_venta = ? WHERE id_venta = ?',
       [id_cliente, id_empleado, fecha_venta, total_venta, id_venta]
@@ -98,13 +88,11 @@ export const actualizarVenta = async (req, res) => {
       return res.status(404).json({ mensaje: 'Venta no encontrada' });
     }
 
-    // Obtener detalles actuales para restaurar stock
     const [detallesActuales] = await pool.query(
       'SELECT id_producto, cantidad FROM Detalles_Ventas WHERE id_venta = ?',
       [id_venta]
     );
 
-    // Restaurar stock de productos anteriores
     for (const detalle of detallesActuales) {
       await pool.query(
         'UPDATE Productos SET stock = stock + ? WHERE id_producto = ?',
@@ -112,10 +100,8 @@ export const actualizarVenta = async (req, res) => {
       );
     }
 
-    // Eliminar detalles actuales
     await pool.query('DELETE FROM Detalles_Ventas WHERE id_venta = ?', [id_venta]);
 
-    // Insertar nuevos detalles y actualizar stock
     for (const detalle of detalles) {
       await pool.query(
         'INSERT INTO Detalles_Ventas (id_venta, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)',
@@ -132,8 +118,6 @@ export const actualizarVenta = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al actualizar la venta', error: error.message });
   }
 };
-
-
 
 // Obtener una venta específica por id_venta
 export const obtenerVentaPorId = async (req, res) => {

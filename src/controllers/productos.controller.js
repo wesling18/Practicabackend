@@ -4,11 +4,16 @@ import { pool } from '../db.js';
 export const obtenerProductos = async (req, res) => {
   try {
     const [result] = await pool.query('SELECT * FROM Productos');
+    console.log('Resultados de Productos:', result); // Depuración
+    if (result.length === 0) {
+      return res.status(404).json({ mensaje: 'No se encontraron productos.' });
+    }
     res.json(result);
   } catch (error) {
+    console.error('Error en obtenerProductos:', error); // Depuración
     return res.status(500).json({
       mensaje: 'Ha ocurrido un error al leer los datos de los productos.',
-      error: error
+      error: error.message
     });
   }
 };
@@ -25,6 +30,7 @@ export const obtenerProducto = async (req, res) => {
     }
     res.json(result[0]);
   } catch (error) {
+    console.error('Error en obtenerProducto:', error); // Depuración
     return res.status(500).json({
       mensaje: 'Ha ocurrido un error al leer los datos del producto.'
     });
@@ -67,6 +73,7 @@ export const registrarProducto = async (req, res) => {
       mensaje: 'Producto registrado exitosamente'
     });
   } catch (error) {
+    console.error('Error en registrarProducto:', error); // Depuración
     return res.status(500).json({
       mensaje: 'Ha ocurrido un error al registrar el producto.',
       error: error.message
@@ -74,53 +81,49 @@ export const registrarProducto = async (req, res) => {
   }
 };
 
-
-
-
 export const eliminarProductos = async (req, res) => {
   try {
-    const [result] = await pool.query('DELETE FROM productos WHERE id_producto = ?', [req.params.id]);
+    const [result] = await pool.query('DELETE FROM Productos WHERE id_producto = ?', [req.params.id]); // Corregido a 'Productos'
 
     if (result.affectedRows === 0) {
       return res.status(404).json({
-        mensaje: `Error al eliminar la producto. El ID ${req.params.id} no fue encontrado.`
+        mensaje: `Error al eliminar el producto. El ID ${req.params.id} no fue encontrado.`
       });
     }
 
     res.status(204).send(); // Respuesta sin contenido para indicar éxito
   } catch (error) {
+    console.error('Error en eliminarProductos:', error); // Depuración
     return res.status(500).json({
       mensaje: 'Ha ocurrido un error al eliminar el producto.',
-      error: error
+      error: error.message
     });
   }
 };
 
-
-
-
-// Actualizar una cliente por su ID (parcial o completa)
+// Actualizar un producto por su ID (parcial o completa)
 export const actualizarProducto = async (req, res) => {
   try {
     const { id } = req.params;
     const datos = req.body;
 
     const [resultado] = await pool.query(
-      'UPDATE Productos SET ? WHERE id_producto = ?',
+      'UPDATE Productos SET ? WHERE id_producto = ?', // Corregido a 'Productos'
       [datos, id]
     );
 
     if (resultado.affectedRows === 0) {
       return res.status(404).json({
-        mensaje: `el producto con ID ${id} no existe.`,
+        mensaje: `El producto con ID ${id} no existe.`,
       });
     }
 
     res.status(204).send(); // Respuesta sin contenido para indicar éxito
   } catch (error) {
+    console.error('Error en actualizarProducto:', error); // Depuración
     return res.status(500).json({
       mensaje: 'Error al actualizar el producto.',
-      error: error,
+      error: error.message,
     });
   }
 };

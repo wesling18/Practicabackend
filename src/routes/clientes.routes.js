@@ -1,6 +1,5 @@
 import { Router } from 'express';
-import {  obtenerClientes, obtenerCliente, registrarCliente,  eliminarCliente, actualizarCliente } from '../controllers/clientes.controller.js';
-
+import { obtenerClientes, obtenerCliente, registrarCliente, eliminarCliente, actualizarCliente } from '../controllers/clientes.controller.js';
 
 const router = Router();
 
@@ -10,18 +9,13 @@ router.get('/clientes', obtenerClientes);
 // Ruta para obtener un cliente por su ID
 router.get('/cliente/:id', obtenerCliente);
 
-//----------------------------------------------------------------------------------------------------------------------------------------
-
-//Ruta para Registrar un cliente
+// Ruta para registrar un cliente
 router.post('/registrarclientes', registrarCliente);
 
+// Ruta para eliminar un cliente
+router.delete('/eliminarclientes/:id', eliminarCliente);
 
-//Ruta para eliminar un cliente
-router.delete('/eliminarclientes', eliminarCliente);
-
-
-//Ruta para actualizar cliente
-router.patch('/actualizarCliente', actualizarCliente);
-
+// Ruta para actualizar cliente (corrigiendo el parámetro)
+router.patch('/actualizarcliente/:id_cliente', actualizarCliente);
 
 export default router;
